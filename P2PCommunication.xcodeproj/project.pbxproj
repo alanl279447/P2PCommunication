@@ -99,6 +99,7 @@
 				TargetAttributes = {
 					9B2F3D4F1F004B0B00F52223 = {
 						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = HMM8M3FREN;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -266,6 +267,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = HMM8M3FREN;
 				INFOPLIST_FILE = P2PCommunication/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.p2p.assignment.P2PCommunication;
@@ -278,6 +280,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = HMM8M3FREN;
 				INFOPLIST_FILE = P2PCommunication/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.p2p.assignment.P2PCommunication;

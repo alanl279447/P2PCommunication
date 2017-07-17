@@ -10,15 +10,17 @@ import MultipeerConnectivity
 
 protocol P2PServiceManagerDelegate {
     func connectedDevicesChanged(manager : P2PServiceManager, connectedDevices: [String])
+    func dataReceived(manager: P2PServiceManager, inputString: String)
 }
 
 class P2PServiceManager : NSObject {
 
     // Service type must be a unique string, at most 15 characters long
     // and can contain only ASCII lowercase letters, numbers and hyphens.
-    private let P2PServiceType = "P2PServiceType"
+    private let P2PServiceType = "p2typesimu"        //p2ptypeph
     private let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
+    private let serviceBrowser : MCNearbyServiceBrowser
 
     var delegate : P2PServiceManagerDelegate?
     
@@ -30,15 +32,32 @@ class P2PServiceManager : NSObject {
 
     override init() {
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: P2PServiceType)
+        self.serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: P2PServiceType)
         super.init()
+        
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
+        
+        self.serviceBrowser.delegate = self
+        self.serviceBrowser.startBrowsingForPeers()
     }
 
     deinit {
         self.serviceAdvertiser.stopAdvertisingPeer()
+        self.serviceBrowser.stopBrowsingForPeers()
     }
-
+    
+    func sendData(DataName : String) {
+        NSLog("%@", "sendData: \(DataName) to \(session.connectedPeers.count) peers")
+        if session.connectedPeers.count > 0 {
+            do {
+                try self.session.send(DataName.data(using: .utf8)!, toPeers: session.connectedPeers, with: .reliable)
+            }
+            catch let error {
+                NSLog("%@", "Error for sending: \(error)")
+            }
+        }
+    }
 }
 
 extension P2PServiceManager : MCNearbyServiceAdvertiserDelegate {
@@ -49,6 +68,7 @@ extension P2PServiceManager : MCNearbyServiceAdvertiserDelegate {
 
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
+        invitationHandler(true, self.session)
     }
 }
 
@@ -80,6 +100,8 @@ extension P2PServiceManager : MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
+        let str = String(data: data, encoding: .utf8)!
+        self.delegate?.dataReceived(manager: self, inputString: str)
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
