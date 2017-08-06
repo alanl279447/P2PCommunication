@@ -11,6 +11,9 @@
 		9B2F3D591F004B0B00F52223 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B2F3D571F004B0B00F52223 /* Main.storyboard */; };
 		9B2F3D5B1F004B0B00F52223 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B2F3D5A1F004B0B00F52223 /* Assets.xcassets */; };
 		9B2F3D5E1F004B0B00F52223 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B2F3D5C1F004B0B00F52223 /* LaunchScreen.storyboard */; };
+		9BAF544A1F31541C00529EC6 /* P2PFileTransferController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BAF54491F31541C00529EC6 /* P2PFileTransferController.swift */; };
+		9BAF544D1F37AC9500529EC6 /* sample_file1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9BAF544B1F37AC9500529EC6 /* sample_file1.txt */; };
+		9BAF544E1F37AC9500529EC6 /* sample_file2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9BAF544C1F37AC9500529EC6 /* sample_file2.txt */; };
 		9BBFE7061F0058A4006193C1 /* P2PServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFE7021F0058A4006193C1 /* P2PServiceManager.swift */; };
 		9BBFE7071F0058A4006193C1 /* P2PViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFE7031F0058A4006193C1 /* P2PViewController.swift */; };
 /* End PBXBuildFile section */
@@ -22,6 +25,9 @@
 		9B2F3D5A1F004B0B00F52223 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9B2F3D5D1F004B0B00F52223 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9B2F3D5F1F004B0B00F52223 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9BAF54491F31541C00529EC6 /* P2PFileTransferController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = P2PFileTransferController.swift; sourceTree = "<group>"; };
+		9BAF544B1F37AC9500529EC6 /* sample_file1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sample_file1.txt; sourceTree = "<group>"; };
+		9BAF544C1F37AC9500529EC6 /* sample_file2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sample_file2.txt; sourceTree = "<group>"; };
 		9BBFE7021F0058A4006193C1 /* P2PServiceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = P2PServiceManager.swift; sourceTree = "<group>"; };
 		9BBFE7031F0058A4006193C1 /* P2PViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = P2PViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -56,6 +62,8 @@
 		9B2F3D521F004B0B00F52223 /* P2PCommunication */ = {
 			isa = PBXGroup;
 			children = (
+				9BAF544B1F37AC9500529EC6 /* sample_file1.txt */,
+				9BAF544C1F37AC9500529EC6 /* sample_file2.txt */,
 				9BBFE7021F0058A4006193C1 /* P2PServiceManager.swift */,
 				9BBFE7031F0058A4006193C1 /* P2PViewController.swift */,
 				9B2F3D531F004B0B00F52223 /* AppDelegate.swift */,
@@ -63,6 +71,7 @@
 				9B2F3D5A1F004B0B00F52223 /* Assets.xcassets */,
 				9B2F3D5C1F004B0B00F52223 /* LaunchScreen.storyboard */,
 				9B2F3D5F1F004B0B00F52223 /* Info.plist */,
+				9BAF54491F31541C00529EC6 /* P2PFileTransferController.swift */,
 			);
 			path = P2PCommunication;
 			sourceTree = "<group>";
@@ -127,6 +136,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BAF544E1F37AC9500529EC6 /* sample_file2.txt in Resources */,
+				9BAF544D1F37AC9500529EC6 /* sample_file1.txt in Resources */,
 				9B2F3D5E1F004B0B00F52223 /* LaunchScreen.storyboard in Resources */,
 				9B2F3D5B1F004B0B00F52223 /* Assets.xcassets in Resources */,
 				9B2F3D591F004B0B00F52223 /* Main.storyboard in Resources */,
@@ -141,6 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9BBFE7071F0058A4006193C1 /* P2PViewController.swift in Sources */,
+				9BAF544A1F31541C00529EC6 /* P2PFileTransferController.swift in Sources */,
 				9BBFE7061F0058A4006193C1 /* P2PServiceManager.swift in Sources */,
 				9B2F3D541F004B0B00F52223 /* AppDelegate.swift in Sources */,
 			);

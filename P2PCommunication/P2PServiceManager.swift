@@ -11,6 +11,10 @@ import MultipeerConnectivity
 protocol P2PServiceManagerDelegate {
     func connectedDevicesChanged(manager : P2PServiceManager, connectedDevices: [String])
     func dataReceived(manager: P2PServiceManager, inputString: String)
+    func didStartReceivingResource(manager : P2PServiceManager, notification: NSDictionary)
+    func updateReceivingProgress(manager : P2PServiceManager, notification: NSDictionary)
+    func didFinishReceivingResource(manager : P2PServiceManager, notification: NSDictionary)
+    
 }
 
 class P2PServiceManager : NSObject {
@@ -24,7 +28,7 @@ class P2PServiceManager : NSObject {
 
     var delegate : P2PServiceManagerDelegate?
     
-    lazy var session : MCSession = {
+    public lazy var session : MCSession = {
         let session = MCSession(peer: self.myPeerId, securityIdentity: nil, encryptionPreference: .required)
         session.delegate = self
         return session
@@ -106,14 +110,21 @@ extension P2PServiceManager : MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveStream")
+        //self.delegate?.
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
         NSLog("%@", "didStartReceivingResourceWithName")
+        let dict: [String: Any] = ["resourceName": resourceName, "peerID": peerID, "progress": progress]
+        self.delegate?.didStartReceivingResource(manager: self, notification: dict as NSDictionary)
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
         NSLog("%@", "didFinishReceivingResourceWithName")
+    
+        let dict: [String: Any] = ["resourceName": resourceName, "peerID": peerID, "localURL": localURL]
+        self.delegate?.didFinishReceivingResource(manager: self, notification: dict as NSDictionary)
+
     }
     
 }
