@@ -17,7 +17,7 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         copySampleFilesToDocDirIfNeeded()
-        arrFiles = getAllDocDirFiles()
+        arrFiles = getAllDocDirFiles()!
         self.tblFiles.register(UITableViewCell.self, forCellReuseIdentifier: "CellIdentifier")
         P2PService.delegate = self
         tblFiles.delegate = self
@@ -26,10 +26,10 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     }
     
     /*@IBAction func SendData(_ sender: UIButton) {
-        let textValue = self.TextEntered.text
-        NSLog("%@", "Text entered:  \(textValue!)")
-        P2PService.sendData(DataName: textValue!)
-    }*/
+     let textValue = self.TextEntered.text
+     NSLog("%@", "Text entered:  \(textValue!)")
+     P2PService.sendData(DataName: textValue!)
+     }*/
     
     func received(data : String) {
         //self.ReceivedLabel.text = data
@@ -39,27 +39,44 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     
     
     private func copySampleFilesToDocDirIfNeeded() {
-        let paths: [Any] = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        documentsDirectory = paths[0] as! String
-        let file1Path: String = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("sample_file1.txt").absoluteString
-        let file2Path: String = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("sample_file2.txt").absoluteString
-        let fileManager = FileManager.default
+        let paths : Array = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        
+        documentsDirectory = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).first!
+
+        //documentsDirectory = (paths[0])
+        let file1Path : String = documentsDirectory + "/sample_file1.txt"
+        let file2Path : String = documentsDirectory + "/sample_file2.txt"
+        let fileManager : FileManager = FileManager.default
+
         
         if !fileManager.fileExists(atPath: file1Path) || !fileManager.fileExists(atPath: file2Path) {
-            try? fileManager.copyItem(atPath: Bundle.main.path(forResource: "sample_file1", ofType: "txt")!, toPath: file1Path)
             
-            try? fileManager.copyItem(atPath: Bundle.main.path(forResource: "sample_file2", ofType: "txt")!, toPath: file2Path)
+            do {
+                try fileManager.copyItem(atPath: Bundle.main.path(forResource: "sample_file1", ofType: "txt")!, toPath: file1Path)
+                try fileManager.copyItem(atPath: Bundle.main.path(forResource: "sample_file2", ofType: "txt")!, toPath: file2Path)
+            } catch let error as NSError  {// Handle the error
+                print("Couldn't copy file to final location! Error:\(error.localizedDescription)")
+            }
             
         }
     }
     
-    public func getAllDocDirFiles() -> [String?] {
-        //full path to documents directory
-        let fileMngr=FileManager.default;
-        let docs=fileMngr.urls(for: .documentDirectory,in: .userDomainMask)[0].path;
-        //list all contents of directory and return as [String] OR nil if failed
-        return try! fileMngr.contentsOfDirectory(atPath:docs);
-        //return allFiles!
+    public func getAllDocDirFiles() -> [String]? {
+        let error: NSError? = nil
+        let fileManager = FileManager.default
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: documentsDirectory)
+            if contents == nil {
+                return (nil)
+            }
+            else {
+                let filenames = contents as [String]
+                return (filenames)
+            }
+        } catch let error as NSError  {// Handle the error
+            print("Couldn't copy file to final location! Error:\(error.localizedDescription)")
+        }
+        return nil
     }
     
     
@@ -137,18 +154,18 @@ extension P2PFileTransferController : P2PServiceManagerDelegate {
     }
     
     
-     func didStartReceivingResource(manager: P2PServiceManager, notification: NSDictionary) {
+    func didStartReceivingResource(manager: P2PServiceManager, notification: NSDictionary) {
         arrFiles.append(notification.description)
         self.tblFiles.reloadData()
     }
     
-     func updateReceivingProgress(manager: P2PServiceManager, notification: NSDictionary) {
+    func updateReceivingProgress(manager: P2PServiceManager, notification: NSDictionary) {
         _ = notification.value(forKey: "Progress")
         _ = arrFiles[(arrFiles.count - 1)]
         self.tblFiles.reloadData()
     }
     
-     func didFinishReceivingResource(manager: P2PServiceManager, notification: NSDictionary) {
+    func didFinishReceivingResource(manager: P2PServiceManager, notification: NSDictionary) {
         let localURL: URL = notification.value(forKey: "localURL") as! URL
         let resourceName = notification.value(forKey: "resourceName")
         let destinationPath: URL = URL(fileURLWithPath: documentsDirectory).appendingPathComponent(resourceName as! String)
