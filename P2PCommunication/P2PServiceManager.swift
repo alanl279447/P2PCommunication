@@ -13,7 +13,7 @@ protocol P2PServiceManagerDelegate {
     func dataReceived(manager: P2PServiceManager, inputString: String)
     func didStartReceivingResource(manager : P2PServiceManager, notification: NSDictionary)
     func updateReceivingProgress(manager : P2PServiceManager, notification: NSDictionary)
-    func didFinishReceivingResource(manager : P2PServiceManager, notification: NSDictionary)
+    func didFinishReceivingResource(manager : P2PServiceManager, resourcename: String, localUrl: URL)
     
 }
 
@@ -59,6 +59,19 @@ class P2PServiceManager : NSObject {
             }
             catch let error {
                 NSLog("%@", "Error for sending: \(error)")
+            }
+        }
+    }
+    
+    func sendResourceAtURL(filepath : String) {
+        NSLog("%@", "sendData: \(filepath) to \(session.connectedPeers.count) peers")
+        let resourceURL = NSURL.fileURL(withPath: filepath)
+        if session.connectedPeers.count > 0 {
+            
+                let cpeerId = session.connectedPeers[0]
+                self.session.sendResource(at: resourceURL, withName: filepath, toPeer: cpeerId)
+                { error in
+                    print("[Error] \(String(describing: error))")
             }
         }
     }
@@ -122,8 +135,8 @@ extension P2PServiceManager : MCSessionDelegate {
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
         NSLog("%@", "didFinishReceivingResourceWithName")
     
-        let dict: [String: Any] = ["resourceName": resourceName, "peerID": peerID, "localURL": localURL]
-        self.delegate?.didFinishReceivingResource(manager: self, notification: dict as NSDictionary)
+        //let dict: [String: Any] = ["resourceName": resourceName, "peerID": peerID, "localURL": localURL]
+        self.delegate?.didFinishReceivingResource(manager: self, resourcename: resourceName, localUrl: localURL)
 
     }
     

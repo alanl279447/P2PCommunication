@@ -25,11 +25,10 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
         tblFiles.reloadData()
     }
     
-    /*@IBAction func SendData(_ sender: UIButton) {
-     let textValue = self.TextEntered.text
-     NSLog("%@", "Text entered:  \(textValue!)")
-     P2PService.sendData(DataName: textValue!)
-     }*/
+    func SendResouces(filename: String) {
+     NSLog("%@", "SendResouces called \(filename)")
+     P2PService.sendResourceAtURL(filepath: filename)
+     }
     
     func received(data : String) {
         //self.ReceivedLabel.text = data
@@ -39,7 +38,7 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     
     
     private func copySampleFilesToDocDirIfNeeded() {
-        let paths : Array = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let _ : Array = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         
         documentsDirectory = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).first!
 
@@ -62,7 +61,7 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     }
     
     public func getAllDocDirFiles() -> [String]? {
-        let error: NSError? = nil
+        let _: NSError? = nil
         let fileManager = FileManager.default
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: documentsDirectory)
@@ -120,13 +119,22 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedFile: String = arrFiles[indexPath.row] as? String ?? ""
+        let selectedFile: String = arrFiles[indexPath.row] ?? ""
         let confirmSending = UIActionSheet(title: selectedFile, delegate: self, cancelButtonTitle: "", destructiveButtonTitle: "", otherButtonTitles: "")
         confirmSending.addButton(withTitle: "sendFile")
         confirmSending.cancelButtonIndex = confirmSending.addButton(withTitle: "Cancel")
         confirmSending.show(in: view)
-        self.selectedFile = arrFiles[indexPath.row] as? String ?? ""
+        self.selectedFile = arrFiles[indexPath.row] ?? ""
         selectedRow = indexPath.row
+    }
+    
+    func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
+        
+        // Move to a background thread to do some long running work
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.P2PService.sendResourceAtURL(filepath: self.selectedFile)
+            // Bounce back to the main thread to update the UI
+        }
     }
     
     
@@ -138,11 +146,18 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     
 }
 
+
 extension P2PFileTransferController : P2PServiceManagerDelegate {
     
     func connectedDevicesChanged(manager: P2PServiceManager, connectedDevices: [String]) {
         OperationQueue.main.addOperation {
-            self.connectionsLabel.text = "Connections: \(connectedDevices)"
+            
+            self.connectionsLabel.lineBreakMode = .byWordWrapping
+            self.connectionsLabel.numberOfLines = 0
+            
+            if (connectedDevices.count > 0) {
+             self.connectionsLabel.text = "Connections: \n\(connectedDevices[0])"
+            }
         }
     }
     
@@ -165,10 +180,10 @@ extension P2PFileTransferController : P2PServiceManagerDelegate {
         self.tblFiles.reloadData()
     }
     
-    func didFinishReceivingResource(manager: P2PServiceManager, notification: NSDictionary) {
-        let localURL: URL = notification.value(forKey: "localURL") as! URL
-        let resourceName = notification.value(forKey: "resourceName")
-        let destinationPath: URL = URL(fileURLWithPath: documentsDirectory).appendingPathComponent(resourceName as! String)
+    func didFinishReceivingResource(manager: P2PServiceManager, resourcename: String, localUrl: URL) {
+        let localURL: URL = localUrl
+        let resourceName = resourcename
+        let destinationPath: URL = URL(fileURLWithPath: documentsDirectory).appendingPathComponent(resourceName)
         let fileManager = FileManager.default
         try? fileManager.copyItem(at: localURL, to: destinationPath)
         

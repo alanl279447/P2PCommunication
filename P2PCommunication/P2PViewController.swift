@@ -23,6 +23,13 @@ class P2PViewController: UIViewController , UITableViewDelegate, UITableViewData
         P2PService.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
+        TextEntered.delegate = self
+        self.connectionsLabel.numberOfLines = 0
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
     
     @IBAction func SendData(_ sender: UIButton) {
@@ -59,10 +66,15 @@ class P2PViewController: UIViewController , UITableViewDelegate, UITableViewData
 }
 
 extension P2PViewController : P2PServiceManagerDelegate {
+    func updateReceivingProgress(manager: P2PServiceManager, notification: NSDictionary) {
+        
+    }
     
     func connectedDevicesChanged(manager: P2PServiceManager, connectedDevices: [String]) {
         OperationQueue.main.addOperation {
-            self.connectionsLabel.text = "Connections: \(connectedDevices)"
+            if (connectedDevices.count > 0) {
+             self.connectionsLabel.text = "Connections: \(connectedDevices[0])"
+            }
         }
     }
     
@@ -77,11 +89,7 @@ extension P2PViewController : P2PServiceManagerDelegate {
         
     }
     
-    func updateReceivingProgress(manager: P2PServiceManager, notification: NSDictionary) {
-        
-    }
-    
-    func didFinishReceivingResource(manager: P2PServiceManager, notification: NSDictionary) {
+    func didFinishReceivingResource(manager: P2PServiceManager, resourcename: String, localUrl: URL) {
         
     }
     
