@@ -187,8 +187,8 @@ extension P2PFileTransferController : P2PServiceManagerDelegate {
         let fileManager = FileManager.default
         try? fileManager.copyItem(at: localURL, to: destinationPath)
         
-        arrFiles.removeAll()
-        arrFiles = (arrayLiteral: getAllDocDirFiles()) as! [String?]
+        //arrFiles.removeAll()
+        arrFiles = getAllDocDirFiles()!
         self.tblFiles.reloadData()
     }
     

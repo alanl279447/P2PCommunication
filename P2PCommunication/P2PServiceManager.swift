@@ -65,7 +65,8 @@ class P2PServiceManager : NSObject {
     
     func sendResourceAtURL(filepath : String) {
         NSLog("%@", "sendData: \(filepath) to \(session.connectedPeers.count) peers")
-        let resourceURL = NSURL.fileURL(withPath: filepath)
+        let filepath1 = Bundle.main.path(forResource: "sample_file1", ofType: "txt")
+        let resourceURL = NSURL.fileURL(withPath: filepath1!)
         if session.connectedPeers.count > 0 {
             
                 let cpeerId = session.connectedPeers[0]
@@ -128,14 +129,12 @@ extension P2PServiceManager : MCSessionDelegate {
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
         NSLog("%@", "didStartReceivingResourceWithName")
-        let dict: [String: Any] = ["resourceName": resourceName, "peerID": peerID, "progress": progress]
-        self.delegate?.didStartReceivingResource(manager: self, notification: dict as NSDictionary)
+        //let dict: [String: Any] = ["resourceName": resourceName, "peerID": peerID, "progress": progress]
+        //self.delegate?.didStartReceivingResource(manager: self, notification: dict as NSDictionary)
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
         NSLog("%@", "didFinishReceivingResourceWithName")
-    
-        //let dict: [String: Any] = ["resourceName": resourceName, "peerID": peerID, "localURL": localURL]
         self.delegate?.didFinishReceivingResource(manager: self, resourcename: resourceName, localUrl: localURL)
 
     }
