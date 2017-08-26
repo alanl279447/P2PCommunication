@@ -131,10 +131,11 @@ class P2PFileTransferController: UIViewController , UITableViewDelegate, UITable
     func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
         
         // Move to a background thread to do some long running work
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.P2PService.sendResourceAtURL(filepath: self.selectedFile)
+        //DispatchQueue.global(qos: .userInitiated).async {
+         //   self.P2PService.sendResourceAtURL(filepath: self.selectedFile)
             // Bounce back to the main thread to update the UI
-        }
+        //}
+        self.P2PService.sendResourceAtURL(filepath: self.selectedFile)
     }
     
     
@@ -182,14 +183,17 @@ extension P2PFileTransferController : P2PServiceManagerDelegate {
     
     func didFinishReceivingResource(manager: P2PServiceManager, resourcename: String, localUrl: URL) {
         let localURL: URL = localUrl
-        let resourceName = resourcename
+        let resourceName = resourcename + "2"
         let destinationPath: URL = URL(fileURLWithPath: documentsDirectory).appendingPathComponent(resourceName)
         let fileManager = FileManager.default
         try? fileManager.copyItem(at: localURL, to: destinationPath)
         
-        //arrFiles.removeAll()
+        arrFiles.removeAll()
         arrFiles = getAllDocDirFiles()!
-        self.tblFiles.reloadData()
+        
+        DispatchQueue.main.async {
+            self.tblFiles.reloadData()
+        }
     }
     
     //func connectedDevicesChanged(manager : P2PServiceManager, connectedDevices: [String])

@@ -21,7 +21,8 @@ class P2PServiceManager : NSObject {
 
     // Service type must be a unique string, at most 15 characters long
     // and can contain only ASCII lowercase letters, numbers and hyphens.
-    private let P2PServiceType = "p2typesimu"        //p2ptypeph
+    //private let P2PServiceType = "p2ptypeph"//"p2typesimu"
+    private let P2PServiceType = "p2typesimu"
     private let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
     private let serviceBrowser : MCNearbyServiceBrowser
@@ -69,7 +70,7 @@ class P2PServiceManager : NSObject {
         let resourceURL = NSURL.fileURL(withPath: filepath1!)
         if session.connectedPeers.count > 0 {
             
-                let cpeerId = session.connectedPeers[0]
+                let cpeerId = session.connectedPeers[1]
                 self.session.sendResource(at: resourceURL, withName: filepath, toPeer: cpeerId)
                 { error in
                     print("[Error] \(String(describing: error))")

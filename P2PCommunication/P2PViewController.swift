@@ -73,7 +73,7 @@ extension P2PViewController : P2PServiceManagerDelegate {
     func connectedDevicesChanged(manager: P2PServiceManager, connectedDevices: [String]) {
         OperationQueue.main.addOperation {
             if (connectedDevices.count > 0) {
-             self.connectionsLabel.text = "Connections: \(connectedDevices[0])"
+             self.connectionsLabel.text = "Connections: \(connectedDevices)"
             }
         }
     }
